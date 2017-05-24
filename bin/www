@@ -34,9 +34,9 @@ server.on('listening', onListening);
  * socket.io
  */
 var socketApi = require('../socketApi');
-var io = socketApi.io;
+var socketio = socketApi.io;
 
-io.attach(server);
+socketio.attach(server);
 
 /**
  * Normalize a port into a number, string, or false.
