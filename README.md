@@ -27,5 +27,5 @@ You will probably never have to touch nginx, but if you ever need to restart it 
 `app.js` is the default. `/bin/www` is what pm2 runs (it calls app.js).  
 `public` is where the static files will be rendered and generated.  
 `routes` is the controller and routing files  
-`src` is where precomipled files go to compile into `public` folder.  
+`src` is where precompiled files go to compile into `public` folder.  
 `views` is pugjs layouts and what gets rendered for user.
