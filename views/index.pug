@@ -2,7 +2,9 @@ extends layout
 
 block content
   .container.text-center
-    h1= title
-    p Welcome to Pseudonyms
+    h1 Welcome to Pseudonyms
+    br
     p Created by Daven and James
-    p Test string is #{test}
+
+block scripts
+    script(src='/js/home.js')

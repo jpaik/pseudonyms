@@ -1,7 +1,5 @@
-$bcolor: #eef0f0;
+@import "helpers/variables";
+@import "helpers/mixins";
 
-body{
-  margin: 0;
-  padding: 0;
-  background-color: $bcolor;
-}
+@import "base/additions";
+@import "base/main";

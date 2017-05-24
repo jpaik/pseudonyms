@@ -1,4 +1,1 @@
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #eef0f0; }
+@import url("https://fonts.googleapis.com/css?family=Quicksand:300,400|Roboto:100,300,400");body{margin:0;padding:0;background-color:#fff;font-family:Roboto,sans-serif;font-weight:300;font-size:16px}h1,h2,h3,h4{font-family:Quicksand,sans-serif;font-weight:300}

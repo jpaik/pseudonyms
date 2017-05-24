@@ -1,0 +1,15 @@
+$bcolor: #fff;
+
+body{
+  margin: 0;
+  padding: 0;
+  background-color: $bcolor;
+  font-family: $font-family-sans-serif;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-base;
+}
+
+h1,h2,h3,h4{
+  font-family: $headings-font-family;
+  font-weight: $font-weight-regular;
+}
