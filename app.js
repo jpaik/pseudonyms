@@ -11,6 +11,9 @@ var game = require('./routes/game');
 
 var app = express();
 
+var socketApi = require('./socketApi');
+var socketio = socketApi.io;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -44,7 +47,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 
   if(err.status === 404){
-    res.render('404', {url: req.url });
+    res.render('404', { url: req.url, title: '404 Not Found' });
     return;
   }
 
