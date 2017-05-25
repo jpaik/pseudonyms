@@ -64,14 +64,16 @@ $(function() {
             $('#swal-input_name').focus();
             reject('Please enter your name.');
           }
-          if ($('#swal-input_code').val() === "") {
+          else if ($('#swal-input_code').val() === "") {
             $('#swal-input_code').focus();
             reject('Please enter game code.');
           }
-          resolve([
-            $('#swal-input_name').val(),
-            $('#swal-input_code').val()
-          ]);
+          else{
+            resolve([
+              $('#swal-input_name').val(),
+              $('#swal-input_code').val()
+            ]);
+          }
         })
       }
     }).then(function(result) {
