@@ -11,11 +11,19 @@ $font-weight-regular: 300;
 $font-weight-bold: 400;
 $font-size-base: 16px;
 
-$text-color: #333 !default;
-$text-color-inverse: #fff !default;
-$brand-color: #333 !default;
+$text-color: #fff !default;
+$text-color-light: #eef0f0 !default;
+$text-color-inverse: #333 !default;
+$brand-color: #fff !default;
 
-$brand-primary: #333;
+$brand-primary: #3498db; 
+$color-team-blue: #2980b9;
+$color-team-red: #c0392b;
+$color-green: #27ae60;
+$color-yellow: #f1c40f;
+$color-dark: #2c3e50;
+$color-grey: #7f8c8d;
+$color-neutral: #fff4d5;
 
 /*
 Breakpoints

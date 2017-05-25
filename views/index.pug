@@ -1,10 +1,19 @@
 extends layout
 
 block content
-  .container.text-center
-    h1 Welcome to Pseudonyms
-    br
-    p Created by Daven and James
-
+  .container.row.text-center
+    .col-md-6.col-md-offset-3.home
+      .row
+        .col-md-12
+          h1 Welcome to Pseudonyms
+      .row.buttons
+        .col-md-12
+          a.btn.btn-default.new(href="#")
+            |New Game
+          a.btn.btn-default.join(href="#")
+            |Join Game 
+      .row
+        .col-md-12
+          include partials/footer
 block scripts
     script(src='/js/home.js')
