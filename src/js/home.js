@@ -30,8 +30,6 @@ $(function() {
               name: name
             }
           }).done(function(data) {
-            Cookie.set('game_uuid', data.uuid, {expires: 1}); //Stores Session Unique ID
-            Cookie.set('game_code', data.code, {expires: 1}); //Stores game's code for resjoining
             resolve([name, data.code]); //Returns name and code to redirect
           }).fail(function() {
             reject('Something went wrong... Try again.');
@@ -83,8 +81,6 @@ $(function() {
               code: $('#swal-input_code').val().toLowerCase()
             }
           }).done(function(data, jqXHR) {
-            Cookie.set('game_code', data.code, {expires: 1});
-            Cookie.set('game_uuid', data.uuid, {expires: 1});
             resolve([
               $('#swal-input_name').val(),
               $('#swal-input_code').val()

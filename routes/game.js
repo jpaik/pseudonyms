@@ -26,7 +26,9 @@ router.post('/create', function(req, res, next) {
 
     room.players[id] = player;
 
-    res.status(200).json({ uuid : player.id, code: gameCode });
+    res.cookie('userId', id, { maxAge : 1440000, httpOnly : true });
+    res.cookie('gameCode', gameCode, { maxAge : 1440000, httpOnly : true });
+    res.status(200).json({ code: gameCode });
 });
 
 router.post('/join', function(req, res, next) {
@@ -44,25 +46,28 @@ router.post('/join', function(req, res, next) {
 
         rooms[gameCode].players[id] = player;
 
-        res.status(200).json({ uuid : player.id });
+        res.cookie('userId', id, { maxAge : 1440000, httpOnly : true });
+        res.cookie('gameCode', gameCode, { maxAge : 1440000, httpOnly : true });
+
+        res.status(200).end();
     } else {
         res.status(400).end();
     }
 });
 
-router.get('/:code', function(req, res, next) {
+router.get('/:gameCode', function(req, res, next) {
     var rooms = req.app.socketio.rooms;
-    var gameCode = req.params.code;
+    var gameCode = req.params.gameCode;
+    var userId = req.cookies.userId;
 
     if (gameCode in rooms) {
         var room = rooms[gameCode];
-        if (!(room.players.includes(req.cookies.game_uuid))) {
-            // User not found in room's list of players
-            res.status(400).end();
-        } else {
-            res.render('game', { title: 'Game', code : req.params.code });
+        if (userId in room.players) {
+            res.render('game', { title: 'Game', gameCode : gameCode });
         }
     }
+
+    res.status(400).end();
 });
 
 function generateRoomCode() {
