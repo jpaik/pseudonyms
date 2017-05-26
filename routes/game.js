@@ -12,8 +12,9 @@ router.post('/create', function(req, res, next) {
         gameCode = generateRoomCode();
     } while (!isValidRoomCode(gameCode, rooms));
 
-    rooms[gameCode] = {};
-    rooms[gameCode].players = {};
+    var room = rooms[gameCode] = {};
+    room.players = {};
+    room.spymasters = [];
 
     var id = uuid();
     var player = {
@@ -23,7 +24,7 @@ router.post('/create', function(req, res, next) {
         ready : false
     };
 
-    rooms[gameCode].players[id] = player;
+    room.players[id] = player;
 
     res.status(200).json({ uuid : player.id, code: gameCode });
 });
@@ -50,12 +51,17 @@ router.post('/join', function(req, res, next) {
 });
 
 router.get('/:code', function(req, res, next) {
-    var room = req.app.socketio.rooms[code];
+    var rooms = req.app.socketio.rooms;
+    var gameCode = req.params.code;
 
-    if (!(room.includes(req.cookies.game_uuid))) {
-        res.status(400).end();
-    } else {
-        res.render('game', { title: 'Game', code : req.params.code });
+    if (gameCode in rooms) {
+        var room = rooms[gameCode];
+        if (!(room.players.includes(req.cookies.game_uuid))) {
+            // User not found in room's list of players
+            res.status(400).end();
+        } else {
+            res.render('game', { title: 'Game', code : req.params.code });
+        }
     }
 });
 
