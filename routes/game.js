@@ -28,7 +28,7 @@ router.post('/create', function(req, res, next) {
 
     res.cookie('userId', id, { maxAge : 1440000, httpOnly : true });
     res.cookie('gameCode', gameCode, { maxAge : 1440000, httpOnly : true });
-    res.status(200).end();
+    res.status(200).send({code: gameCode});
 });
 
 router.post('/join', function(req, res, next) {
