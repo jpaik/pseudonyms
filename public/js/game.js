@@ -1,0 +1,1 @@
+"use strict";$(function(){!function(e){$("meta[name=theme-color]").remove();var t="#fff";"red"===e?t="#c0392b":"blue"===e&&(t="#2980b9"),$("head").append('<meta name="theme-color" content="'+t+'">')}(1==Math.round(Math.random())?"red":"blue")});
