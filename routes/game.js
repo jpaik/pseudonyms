@@ -42,7 +42,7 @@ router.post('/join', function(req, res, next) {
 
         rooms[gameCode].players[id] = player;
 
-        res.status(200).json({ uuid : player.id };
+        res.status(200).json({ uuid : player.id });
     } else {
         res.status(400).end();
     }
