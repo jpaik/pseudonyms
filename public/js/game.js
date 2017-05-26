@@ -1,1 +1,1 @@
-"use strict";$(function(){!function(e){$("meta[name=theme-color]").remove();var t="#fff";"red"===e?t="#c0392b":"blue"===e&&(t="#2980b9"),$("head").append('<meta name="theme-color" content="'+t+'">')}(1==Math.round(Math.random())?"red":"blue")});
+"use strict";$(function(){function e(e){$("meta[name=theme-color]").remove();var n="#333333";"red"===e?n="#c0392b":"blue"===e&&(n="#2980b9"),$("head").append('<meta name="theme-color" content="'+n+'">')}$("h1").on("click",function(){e(1==Math.round(Math.random())?"red":"blue")})});
