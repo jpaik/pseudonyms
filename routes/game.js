@@ -12,6 +12,7 @@ router.post('/create', function(req, res, next) {
         gameCode = generateRoomCode();
     } while (!isValidRoomCode(gameCode, rooms));
 
+    rooms[gameCode] = {};
     rooms[gameCode].players = {};
 
     var id = uuid();
@@ -29,9 +30,9 @@ router.post('/create', function(req, res, next) {
 
 router.post('/join', function(req, res, next) {
     var rooms = req.app.socketio.rooms;
-    var code = req.body.code;
+    var gameCode = req.body.code;
 
-    if (code in rooms) {
+    if (gameCode in rooms) {
         var id = uuid();
         var player = {
             name : req.body.name,
