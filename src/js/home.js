@@ -33,18 +33,14 @@ $(function() {
               name: name
             }
           }).done(function(data) {
-            resolve([name, data.code]); //Returns name and code to redirect
+            resolve(data.code); //Returns name and code to redirect
           }).fail(function() {
             reject('Something went wrong... Try again.');
           });
         })
       }
-    }).then(function(data) { //data = name and code
-      swal({
-        type: 'success',
-        html: 'Creating Room for ' + data[0] + " | Code: " + data[1]
-      });
-      //window.location.href = /game/ + code
+    }).then(function(code) { //Gets game code and redirects there.
+      window.location.href = '/game/' + code;
     }).catch(swal.noop);
   }); //End Create game click
 
@@ -63,8 +59,10 @@ $(function() {
       buttonsStyling: false,
       onOpen: function() {
         $('#swal-input_name').focus();
-        $('#swal-input_code').unbind('keyup').on('keyup', function(){ //Force Limit to 4 characters
+        $('#swal-input_code').unbind('keyup keydown').on('keyup', function(){ //Force Limit to 4 characters
           if($(this).val().length > 4) $(this).val($(this).val().substring(0,4));
+        }).on('keydown', function(e){
+          if(e.which === 13) swal.clickConfirm();
         });
       },
       onClose: function(){
@@ -89,11 +87,8 @@ $(function() {
               name: $('#swal-input_name').val(),
               code: $('#swal-input_code').val().toLowerCase()
             }
-          }).done(function(data, jqXHR) {
-            resolve([
-              $('#swal-input_name').val(),
-              $('#swal-input_code').val()
-            ]);
+          }).done(function() {
+            resolve($('#swal-input_code').val().toLowerCase());
           }).fail(function(jqXHR) {
             if(jqXHR.status === 400){
               reject('Game not found.');
@@ -103,12 +98,8 @@ $(function() {
           });
         })
       }
-    }).then(function(result) {
-      swal({
-        type: 'success',
-        html: 'Joining Room for ' + result[0] + ' in room: ' + result[1]
-      });
-      //window.location.href = /game/ + code
+    }).then(function(code) {
+      window.location.href = '/game/' + code;
     }).catch(swal.noop);
 
   }); //End join button click
