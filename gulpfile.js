@@ -28,7 +28,7 @@ gulp.task('images', function() {
 });
 
 gulp.task('js', function() {
-  var jsbuild = gulp.src(folder.src + 'js/**/*')
+  var jsbuild = gulp.src([folder.src + 'js/**/*', !folder.src + 'js/**/*.min.js'])
     // .pipe(order([]))
     .pipe(babel({
       presets: ['es2015']
