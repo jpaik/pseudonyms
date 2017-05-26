@@ -1,0 +1,86 @@
+.swal2-modal{
+  border-radius: 0;
+  font-family: $font-family-sans-serif;
+}
+.swal2-show{
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.swal2-modal button, .swal2-modal .btn{
+  border-radius: 0;
+  border-color: #ccc;
+  &[disabled]:hover{
+    color: $text-color-inverse;
+  }
+  @include transition(background-color ease .3s);
+}
+.swal2-modal .swal2-title{
+  font-weight: $font-weight-bold;
+  color: $text-color-inverse;
+}
+.swal2-modal .swal2-cancel{
+  margin-left: 10px;
+  &:after{
+    @include linear-gradient(135deg, #999 0%, #333 100%);
+  }
+}
+.swal2-modal .swal2-buttonswrapper.swal2-loading .swal2-confirm {
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    vertical-align: top;
+    color: transparent;
+    cursor: default;
+    user-select: none;
+    background-color: transparent;
+    border-width: 4px;
+    border-style: solid;
+    border-image: initial;
+    border-color: transparent;
+    border-left-color: rgb(48, 133, 214);
+    border-right-color: rgb(48, 133, 214);
+    padding: 0px;
+    margin: 7.5px;
+    border-radius: 100%;
+    animation: rotate-loading 1.5s linear 0s infinite normal;
+
+    &:hover:after{
+      display: none;
+    }
+}
+#swal-input_code{
+  margin-top: 0;
+  text-transform: uppercase;
+}
+.swal2-modal .swal2-file, .swal2-modal .swal2-input, .swal2-modal .swal2-textarea{
+  color: $text-color-inverse;
+  border-radius: 0;
+  &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #ccc;
+    text-transform: capitalize;
+  }
+  &::-moz-placeholder { /* Firefox 19+ */
+    color: #ccc;
+    text-transform: capitalize;
+  }
+  &:-ms-input-placeholder { /* IE 10+ */
+    color: #ccc;
+    text-transform: capitalize;
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+    color: #ccc;
+    text-transform: capitalize;
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

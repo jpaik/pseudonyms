@@ -97,6 +97,9 @@ Button Styling
     }
     @include transition(all .3s ease);
   }
+  &:focus{
+    outline: none;
+  }
   &:after{
     position: absolute;
     content: '';

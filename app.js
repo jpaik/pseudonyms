@@ -46,7 +46,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 
   if(err.status === 404){
-    res.render('404', {url: req.url });
+    res.render('404', { url: req.url, title: '404 Not Found' });
     return;
   }
 
