@@ -51,21 +51,26 @@
 }
 #swal-input_code{
   margin-top: 0;
+  text-transform: uppercase;
 }
 .swal2-modal .swal2-file, .swal2-modal .swal2-input, .swal2-modal .swal2-textarea{
   color: $text-color-inverse;
   border-radius: 0;
   &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     color: #ccc;
+    text-transform: capitalize;
   }
   &::-moz-placeholder { /* Firefox 19+ */
     color: #ccc;
+    text-transform: capitalize;
   }
   &:-ms-input-placeholder { /* IE 10+ */
     color: #ccc;
+    text-transform: capitalize;
   }
   &:-moz-placeholder { /* Firefox 18- */
     color: #ccc;
+    text-transform: capitalize;
   }
 }
 
