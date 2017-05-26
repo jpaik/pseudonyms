@@ -31,12 +31,10 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * socket.io
+ * Attach socket.io to server
  */
-var socketApi = require('../socketApi');
-var socketio = socketApi.io;
 
-socketio.attach(server);
+app.socketio.io.attach(server);
 
 /**
  * Normalize a port into a number, string, or false.

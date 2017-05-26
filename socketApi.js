@@ -1,15 +1,15 @@
 var uuid = require('uuid/v4');
 var socketio = require('socket.io');
 var io = socketio();
+
 var socketApi = {};
-var util = require('util');
 
 socketApi.io = io;
-rooms = {}
+socketApi.rooms = {};
 
 io.on('connection', function(socket) {
-    var id = uuid();
-    socket.clientId = id;
+    socket.on('register', function() {
+    });
 
     // Lobby events
     socket.on('join', function() {
@@ -33,4 +33,3 @@ io.on('connection', function(socket) {
 });
 
 module.exports = socketApi;
-

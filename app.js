@@ -1,4 +1,4 @@
-var express = require('express');
+jar express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -10,6 +10,8 @@ var users = require('./routes/users');
 var game = require('./routes/game');
 
 var app = express();
+
+app.socketio = require('./socketApi');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
