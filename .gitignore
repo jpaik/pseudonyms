@@ -1,5 +1,5 @@
 /node_modules
+/public
 .env
 *.swp
 *.swo
-/public
