@@ -7,13 +7,13 @@ $(function(){
   });
 
   function updateThemeColor(team){
-    $('meta[name=theme-color]').remove();
+    $('meta[name=theme-color]').add('meta[name=msapplication-navbutton-color]').remove();
     var color = "#333333";
     if(team === "red"){
       color = '#c0392b';
     }else if(team === "blue"){
       color = '#2980b9';
     }
-    $('head').append('<meta name="theme-color" content="'+color+'">');
+    $('head').append('<meta name="theme-color" content="'+color+'" /> <meta name="msapplication-navbutton-color" content="'+color+'" />');
   }
 });
