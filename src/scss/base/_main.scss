@@ -133,11 +133,13 @@ Button Styling
   .btn{
     min-width: 40%;
     &:focus{
-      background: transparent;
+      background-color: transparent;
       color: $text-color;
       border-color: #fff;
       &:after{
-        left: 105%;
+        // left: 105%;
+        width: 140%;
+        left: -25%;
       }
     }
     &:active, &:active:focus{

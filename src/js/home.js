@@ -12,6 +12,9 @@ $(function() {
       confirmButtonClass: 'btn btn-default',
       cancelButtonClass: 'btn btn-default',
       buttonsStyling: false,
+      onClose: function(){
+        // $('.row.buttons a').blur();
+      },
       inputValidator: function(value) { //Checks if name is not null.
         return new Promise(function(resolve, reject) {
           if (value) {
@@ -35,7 +38,7 @@ $(function() {
             reject('Something went wrong... Try again.');
           });
         })
-      },
+      }
     }).then(function(data) { //data = name and code
       swal({
         type: 'success',
@@ -63,6 +66,9 @@ $(function() {
         $('#swal-input_code').unbind('keyup').on('keyup', function(){ //Force Limit to 4 characters
           if($(this).val().length > 4) $(this).val($(this).val().substring(0,4));
         });
+      },
+      onClose: function(){
+        // $('.row.buttons a').blur();
       },
       preConfirm: function() {
         return new Promise(function(resolve, reject) { //Returns a promise object, rejects if error and resolves if game exists.
