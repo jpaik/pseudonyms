@@ -50,8 +50,8 @@ $(function() {
     e.preventDefault();
     swal({
       title: 'Join a Game',
-      html: '<input id="swal-input_name" class="swal2-input" placeholder="Your Name">' +
-        '<input id="swal-input_code" class="swal2-input" placeholder="Game Code" maxlength="4">',
+      html: '<input id="swal-input_name" class="swal2-input" placeholder="Your Name" type="text">' +
+        '<input id="swal-input_code" class="swal2-input" placeholder="Game Code" type="text" maxlength="4" pattern="[a-zA-Z]*">',
       confirmButtonText: "Join",
       showCancelButton: true,
       showLoaderOnConfirm: true,
@@ -60,6 +60,9 @@ $(function() {
       buttonsStyling: false,
       onOpen: function() {
         $('#swal-input_name').focus();
+        $('#swal-input_code').unbind('keyup').on('keyup', function(){ //Force Limit to 4 characters
+          if($(this).val().length > 4) $(this).val($(this).val().substring(0,4));
+        });
       },
       preConfirm: function() {
         return new Promise(function(resolve, reject) { //Returns a promise object, rejects if error and resolves if game exists.
