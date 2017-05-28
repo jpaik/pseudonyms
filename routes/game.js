@@ -64,6 +64,7 @@ router.get('/:gameCode', function(req, res, next) {
         var room = rooms[gameCode];
         if (userId in room.players) {
             res.render('game', { title: 'Game', gameCode : gameCode });
+            return;
         }
     }
 
