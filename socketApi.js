@@ -38,7 +38,10 @@ io.on('connection', function(socket) {
             socket.userId = userId;
             socket.gameCode = gameCode;
 
-            io.in(gameCode).emit('player_join', { userId : userId });
+            io.in(gameCode).emit('player_join', {
+                userId : userId
+                name : getUser(userId, gameCode).name
+            });
             socket.join(gameCode);
             socket.emit('confirmjoin');
         } else {
@@ -80,6 +83,10 @@ function isInGame(userId, gameCode) {
     }
 
     return false;
+}
+
+function getUser(userId, gameCode) {
+    return socketApi.rooms[gameCode].players[userId];
 }
 
 module.exports = socketApi;
