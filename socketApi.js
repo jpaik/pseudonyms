@@ -31,7 +31,6 @@ io.on('connection', function(socket) {
 
     // Lobby events
     socket.on('join', function(data) {
-        console.log('join');
         var userId = data.userId;
         var gameCode = data.gameCode;
 
@@ -47,6 +46,12 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('leave', function() {
+        io.in(socket.gameCode).emit('player_leave', { userId : socket.userId });
+        socket.leave(socket.gameCode);
+        delete socketApi.rooms[socket.gameCode].players[socket.userId];
+        delete socket.userId;
+        delete socket.gameCode;
+        socket.emit('confirmleave');
     });
     socket.on('teamswitch', function(data) {
     });
