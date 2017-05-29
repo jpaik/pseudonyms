@@ -79,7 +79,7 @@ router.get('/:gameCode', function(req, res, next) {
         }
     }
 
-    res.status(400).end();
+    res.render('errors/400',{ gameCode: gameCode, title: 'Game Not Found'});
 });
 
 function generateRoomCode() {

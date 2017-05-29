@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  body
+    .contanier
+       .row.text-center
+         .col-md-12
+           h1 Game Not Found
+           p 
+             |Game with the code 
+             span(style="text-transform:uppercase") #{gameCode} 
+             |does not exist
+           br
+           p
+             a.btn.btn-default(href="/") Back Home
