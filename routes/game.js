@@ -26,8 +26,8 @@ router.post('/create', function(req, res, next) {
 
     room.players[id] = player;
 
-    res.cookie('userId', id, { maxAge : 1440000, httpOnly : true });
-    res.cookie('gameCode', gameCode, { maxAge : 1440000, httpOnly : true });
+    res.cookie('userId', id, { maxAge : 86400000, httpOnly : true });
+    res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : true });
     res.status(200).send({code: gameCode});
 });
 
