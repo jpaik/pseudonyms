@@ -131,6 +131,16 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('unready', function() {
+        var user = getUser(socket.userId, socket.gameCode);
+
+        if (!user.ready) {
+            socket.emit('failunready');
+        } else {
+            socket.to(socket.gameCode).emit('player_unready', {
+                userId : socket.userId
+            });
+            socket.emit('confirmunready');
+        }
     });
 
     // Game events
