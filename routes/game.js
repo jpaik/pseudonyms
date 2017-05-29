@@ -6,6 +6,7 @@ var randomstring = require('randomstring');
 
 router.post('/create', function(req, res, next) {
     var rooms = req.app.socketio.rooms;
+    var name = rqe.body.name;
 
     var gameCode;
     do {
@@ -18,7 +19,7 @@ router.post('/create', function(req, res, next) {
 
     var id = uuid();
     var player = {
-        name : req.body.name,
+        name : name,
         team : 'red',
         spymaster : false,
         ready : false
@@ -28,17 +29,19 @@ router.post('/create', function(req, res, next) {
 
     res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
     res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
+    res.cookie('name', name, { maxAge : 86400000, httpOnly : false });
     res.status(200).send({code: gameCode});
 });
 
 router.post('/join', function(req, res, next) {
     var rooms = req.app.socketio.rooms;
     var gameCode = req.body.code;
+    var name = req.body.name;
 
     if (gameCode in rooms) {
         var id = uuid();
         var player = {
-            name : req.body.name,
+            name : name,
             team : 'red',
             spymaster : false,
             ready : false
@@ -48,6 +51,7 @@ router.post('/join', function(req, res, next) {
 
         res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
         res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
+        res.cookie('name', name, { maxAge : 86400000, httpOnly : false });
 
         res.status(200).end();
     } else {
