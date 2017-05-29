@@ -188,7 +188,7 @@ socketApi.getSmallestTeam = function(gameCode) {
 
     var min = undefined;
     var minTeamName = undefined;
-    Object.keys(teams).forEach(function(teamName) {
+    Object.keys(teamCounts).forEach(function(teamName) {
         var count = teamCounts[teamName];
         if (min === undefined || count < min) {
             min = count;

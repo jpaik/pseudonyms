@@ -53,7 +53,7 @@ router.post('/join', function(req, res, next) {
         };
 
         rooms[gameCode].players[id] = player;
-        rooms.teamCounts[smallestTeam]++;
+        rooms[gameCode].teamCounts[smallestTeam]++;
 
         res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
         res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
