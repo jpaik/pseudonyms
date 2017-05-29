@@ -46,8 +46,8 @@ router.post('/join', function(req, res, next) {
 
         rooms[gameCode].players[id] = player;
 
-        res.cookie('userId', id, { maxAge : 1440000, httpOnly : true });
-        res.cookie('gameCode', gameCode, { maxAge : 1440000, httpOnly : true });
+        res.cookie('userId', id, { maxAge : 86400000, httpOnly : true });
+        res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : true });
 
         res.status(200).end();
     } else {
