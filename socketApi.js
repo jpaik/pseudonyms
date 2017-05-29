@@ -119,6 +119,16 @@ io.on('connection', function(socket) {
         socket.emit('failroleswitch');
     });
     socket.on('ready', function() {
+        var user = getUser(socket.userId, socket.gameCode);
+
+        if (user.ready) {
+            socket.emit('failready');
+        } else {
+            socket.to(socket.gameCode).emit('player_ready', {
+                userId : socket.userId
+            });
+            socket.emit('confirmready');
+        }
     });
     socket.on('unready', function() {
     });
