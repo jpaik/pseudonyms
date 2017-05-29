@@ -20,8 +20,8 @@ router.post('/create', function(req, res, next) {
     var id = uuid();
     var player = {
         name : name,
-        team : 'red',
-        spymaster : false,
+        teamName : 'red',
+        roleName : 'player',
         ready : false
     };
 
@@ -42,8 +42,8 @@ router.post('/join', function(req, res, next) {
         var id = uuid();
         var player = {
             name : name,
-            team : 'red',
-            spymaster : false,
+            teamName : 'red',
+            roleName : 'player',
             ready : false
         };
 
