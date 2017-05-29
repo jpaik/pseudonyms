@@ -46,8 +46,12 @@ io.on('connection', function(socket) {
 
             var players = socketApi.rooms[gameCode].players;
             var users = [];
-            Object.keys(players).forEach(function(key) {
-                users.push(players[key]);
+            Object.keys(players).forEach(function(id) {
+                var player = players[id];
+
+                if (id !== socket.userId) {
+                    users.push(player);
+                }
             });
 
             socket.emit('confirmjoin', {
