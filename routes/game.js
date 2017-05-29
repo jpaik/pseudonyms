@@ -6,7 +6,7 @@ var randomstring = require('randomstring');
 
 router.post('/create', function(req, res, next) {
     var rooms = req.app.socketio.rooms;
-    var name = rqe.body.name;
+    var name = req.body.name;
 
     var gameCode;
     do {
