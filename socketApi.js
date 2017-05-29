@@ -72,6 +72,23 @@ io.on('connection', function(socket) {
         socket.emit('confirmleave');
     });
     socket.on('teamswitch', function(data) {
+        var teamName = data.teamName;
+        var room = socketApi.rooms[socket.gameCode];
+        var user = getUser(socket.userId, socket.gameCode);
+
+        if (teamName in room.teamCounts) {
+            room.teamCounts[user.teamName]--;
+            room.teamCounts[teamName]++;
+            user.teamName = teamName;
+
+            socket.to(socket.gameCode).emit('player_teamswitch', {
+                userId : socket.userId,
+                teamName : teamName
+            });
+            socket.emit('confirmteamswitch');
+        } else {
+            socket.emit('failteamswitch');
+        }
     });
     socket.on('roleswitch', function(data) {
     });
