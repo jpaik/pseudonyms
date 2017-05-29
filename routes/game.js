@@ -15,7 +15,8 @@ router.post('/create', function(req, res, next) {
 
     var room = rooms[gameCode] = {};
     room.players = {};
-    room.spymasters = [];
+    room.teamCounts = { red : 0, blue : 0};
+    room.gameState = 'lobby';
 
     var id = uuid();
     var player = {
@@ -26,7 +27,7 @@ router.post('/create', function(req, res, next) {
     };
 
     room.players[id] = player;
-    room.teamCounts = { red : 1, blue : 0}; 
+    room.teamCounts.red++;
 
     res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
     res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
