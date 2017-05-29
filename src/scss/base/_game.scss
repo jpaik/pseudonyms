@@ -1,0 +1,91 @@
+view {
+  z-index: 1;
+  display: block;
+  margin: 0;
+  padding: 20px;
+  @include box-shadow(0, 0, 10px, rgba(0,0,0,.2));
+  background: rgba(255,255,255,.15);
+}
+
+.lobby > .users {
+  > .team {
+    margin-bottom: 20px;
+
+    h1 {
+      padding: 10px 15px;
+      margin: 0;
+      cursor: pointer;
+      .btn {
+        font-size: $font-size-base;
+        margin-top: -10px;
+        padding: 5px 10px;
+      }
+    }
+
+    &.red {
+      @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+      h1 {
+        background: $color-team-red;
+      }
+
+      ul.master {
+        background: rgba($color-dark, .5);
+      }
+    }
+
+    &.blue {
+      @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+      h1 {
+        background: $color-team-blue;
+      }
+
+      ul.master {
+        background: rgba($color-dark, .5);
+      }
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(0,0,0,.1);
+    &.player{
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    li {
+      padding: 10px 20px;
+      border-bottom: 1px solid $text-color-inverse;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.lobby > .buttons {
+  margin: 40px -15px 0;
+
+  .btn {
+    width: 100%;
+  }
+
+  .btn-success {
+    color: #fff;
+    background-color: $color-green;
+
+    &:hover {
+      @include linear-gradient(135deg, $color-green 0%, darken($color-green, 10%) 100%);
+    }
+  }
+
+  .btn-danger {
+    color: #fff;
+    background-color: $color-team-red;
+
+    &:hover {
+      @include linear-gradient(135deg, $color-team-red 0%, darken($color-team-red, 10%) 100%);
+    }
+  }
+}
