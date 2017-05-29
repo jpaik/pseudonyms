@@ -91,6 +91,32 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('roleswitch', function(data) {
+        var roleName = data.roleName;
+        var user = getUser(socket.userId, socket.gameCode);
+
+        if (roleName === 'master') {
+            if (!hasMaster(socket.gameCode, user.teamName)) {
+                user.roleName = roleName;
+
+                socket.to(socket.gameCode).emit('player_roleswitch', {
+                    userId : socket.userId,
+                    roleName : roleName
+                });
+                socket.emit('confirmroleswitch');
+                return;
+            }
+        } else if (roleName === 'player') {
+            user.roleName = roleName;
+
+            socket.to(socket.gameCode).emit('player_roleswitch', {
+                userId : socket.userId,
+                roleName : roleName
+            });
+            socket.emit('confirmroleswitch');
+            return;
+        }
+
+        socket.emit('failroleswitch');
     });
     socket.on('ready', function() {
     });
@@ -119,6 +145,20 @@ function isInGame(userId, gameCode) {
 
 function getUser(userId, gameCode) {
     return socketApi.rooms[gameCode].players[userId];
+}
+
+function hasMaster(gameCode, teamName) {
+    var players = socketApi.rooms[gameCode].players;
+
+    Object.keys(players).forEach(function(userId) {
+        var player = players[userId];
+
+        if (player.roleName === 'master' && player.teamName === teamName) {
+            return true;
+        }
+    });
+
+    return false;
 }
 
 socketApi.getSmallestTeam = function(gameCode) {
