@@ -50,7 +50,7 @@ io.on('connection', function(socket) {
             var users = [];
             Object.keys(players).forEach(function(id) {
                 var player = players[id];
-
+                player.userId = id;
                 if (id !== socket.userId) {
                     users.push(player);
                 }
@@ -126,6 +126,7 @@ io.on('connection', function(socket) {
         if (user.ready) {
             socket.emit('failready');
         } else {
+            user.ready = true;
             socket.to(socket.gameCode).emit('player_ready', {
                 userId : socket.userId
             });
@@ -138,6 +139,7 @@ io.on('connection', function(socket) {
         if (!user.ready) {
             socket.emit('failunready');
         } else {
+            user.ready = false;
             socket.to(socket.gameCode).emit('player_unready', {
                 userId : socket.userId
             });
