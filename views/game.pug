@@ -1,9 +1,41 @@
 extends layout
 
 block content
-  .container.text-center
-    h1= title
-    p Game View
+  .container
+    .row
+      .col-md-6.col-md-offset-3
+        #{'view'}.lobby
+          .users
+            .red.team(data-team="red")
+              h1
+                span.pull-right 
+                  a.btn.btn-default Join Team
+                |Red Team
+              ul.master
+                li                
+                  i.fa.fa-user-secret
+                  |&nbsp; Become Spymaster
+              ul.player
+            .blue.team(data-team="blue")
+              h1
+                span.pull-right 
+                  a.btn.btn-default Join Team
+                |Blue Team
+              ul.master
+                li                
+                  i.fa.fa-user-secret
+                  |&nbsp; Become Spymaster
+              ul.player
+          .buttons
+            .row.text-center
+              .col-md-6
+                a.btn.btn-success(data-type="ready") Ready Up
+              .col-md-6
+                a.btn.btn-default(data-type="leave") Leave
+        #{'view'}.game.collapse
+        #{'view'}.end.collapse
 
 block scripts
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js')
+    script(src='/js/jscookie.min.js')
+    script(src='/js/game.js')
