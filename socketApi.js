@@ -57,7 +57,9 @@ io.on('connection', function(socket) {
             });
 
             socket.emit('confirmjoin', {
-                users : users
+                users : users,
+                gameState : socketApi.rooms[gameCode].gameState,
+                teamName : user.teamName
             });
         } else {
             socket.emit('failjoin');
