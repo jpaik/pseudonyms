@@ -21,27 +21,26 @@ $(function() {
   */
   //Client Events
   let currentTeam = "",
+    currentRole = "player",
     currentReady = false,
     currentUserId = Cookies.get('userId');
   let userView = $('view.lobby .users');
   $('view.lobby').on('click tap', '.users h1', function() { //Changes teams
       let team = $(this).parent().data('team'); //Gets teams name
       if (!team || currentTeam === team) return; //If team doesn't exist or they're on the team already, then don't do anything.
-      currentTeam = team;
+      currentTeam = team; //Change team to new team.
       joinTeam();
     })
     .on('click tap', '.buttons .btn', function() {
-      var type = $(this).data('type');
+      let type = $(this).data('type');
       if (type === "ready") {
         if (currentReady) { //User clicked Unready
           currentReady = false;
           $(this).toggleClass('btn-success btn-danger').text('Ready Up');
-          console.log("Ready: " + currentReady);
           socket.emit('unready');
         } else { //User clicked Ready Up
           currentReady = true;
           $(this).toggleClass('btn-success btn-danger').text('Unready');
-          console.log("Ready: " + currentReady);
           socket.emit('ready');
         }
         playerToggleReady(currentUserId, currentReady);
@@ -53,17 +52,36 @@ $(function() {
 
   //Client Functions
   function joinTeam() { //handles user joining team
+    socket.emit('teamswitch', {
+      teamName: currentTeam
+    });
+  }
+  function currentUserSwitchTeam(){ //Switches user to team on confirm
     $(userView).find('[data-id="' + currentUserId + '"]').remove(); //Delete from list
-    let user = createUser(currentUserId, Cookies.get('gameCode'));
+    let user = createUser(currentUserId, Cookies.get('name'));
     $(user).appendTo($(userView).find('.' + currentTeam + " ul.player"));
 
     $(userView).find('h1 .pull-right').show(); //Show the join icon
     $(userView).find('.' + currentTeam + " h1 .pull-right").hide(); //Hide this team's join icon
 
     updateThemeColor(currentTeam);
+    if(currentReady) $('view.lobby .btn[data-type="ready"]').click(); //Unready the user if they were ready on team switch.
+  }
+  function switchRole(){ //handles user switching role
     socket.emit('teamswitch', {
-      team: currentTeam
+      roleName: currentRole
     });
+  }
+  function currentUserSwitchRole(){
+    $(userView).find('[data-id="' + currentUserId + '"]').remove(); //Delete from list
+    let user = createUser(currentUserId, Cookies.get('name'));
+    $(user).appendTo($(userView).find('.' + currentTeam + " ul.player"));
+
+    $(userView).find('h1 .pull-right').show(); //Show the join icon
+    $(userView).find('.' + currentTeam + " h1 .pull-right").hide(); //Hide this team's join icon
+
+    updateThemeColor(currentTeam);
+    if(currentReady) $('view.lobby .btn[data-type="ready"]').click(); //Unready the user if they were ready on team switch.
   }
 
   function playerSwitchedTeam(id, team) { //handles other user switching team. team = red/blue
@@ -73,7 +91,6 @@ $(function() {
     let switchedUser = createUser(id, uname);
     $(switchedUser).appendTo($(userView).find('.' + team + " ul.player"));
   }
-
   function playerSwitchedRoles(id, role) { //handles other user switching role. role=player/master
     let user = $(userView).find('[data-id="' + id + '"]');
     let uname = $(user).data('name'),
@@ -82,17 +99,14 @@ $(function() {
     let switchedUser = createUser(id, uname);
     $(switchedUser).appendTo($(userView).find('.' + team + " ul." + role));
   }
-
   function playerJoined(id, name, team) { //handles user joining. name = username, team = red/blue
     $(createUser(id, name)).appendTo($(userView).find('.' + team + " ul.player"));
   }
-
   function playerLeft(id) { //handles user  leaving
     let switchedUser = $(userView).find('[data-id="' + id + '"]');
     $(userView).find('[data-id="' + id + '"]').remove();
   }
-
-  function playerToggleReady(id, isReady) { //hadndles other users reading/not ready. isReady = boolean
+  function playerToggleReady(id, isReady) { //handles any user ready/not ready. isReady = boolean
     let user = $(userView).find('[data-id="' + id + '"]');
     if (isReady) {
       $(user).find('.toggleReady').addClass('fa-check-square-o').removeClass('fa-square-o');
@@ -100,11 +114,11 @@ $(function() {
       $(user).find('.toggleReady').removeClass('fa-check-square-o').addClass('fa-square-o');
     }
   }
-  var createUser = function(id, name, player = true, ready = false) { //player = true unless it's a master, ready = false unless they're ready
+  var createUser = function(id, name, role="player", ready=false) { //role = player unless it's a master, ready = false unless they're ready
     let html = `
       <li data-id="${id}" data-name="${name}">
         <span class="pull-right"><i class="toggleReady fa ${ready ? "fa-check-square-o" : "fa-square-o"}"></i></span>
-        <i class="fa ${player ? "fa-user-o" : "fa-user-secret"}"></i>&nbsp; ${name}
+        <i class="fa ${role === "player" ? "fa-user-o" : "fa-user-secret"}"></i>&nbsp; ${name}
       </li>
       `;
     return html;
@@ -112,10 +126,9 @@ $(function() {
 
   function initUsers(users) { //users = array of users from confirmjoin
     users.forEach(function(user) {
-      let existingUser = createUser(user.id, user.name, user.roleName, user.ready);
-      existingUser.appendTo($(userView).find('.' + user.teamName + " ul." + user.roleName));
+      let existingUser = createUser(user.userId, user.name, user.roleName, user.ready);
+      $(existingUser).appendTo($(userView).find('.' + user.teamName + " ul." + user.roleName));
     });
-
   }
 
 
@@ -137,6 +150,22 @@ $(function() {
     })
     .on('failjoin', function() { //User didn't join successfully. Redirect to home.
       console.log('Failed to Join Game');
+    })
+    .on('confirmteamswitch', function() { //Confirmed Current User Team Switch
+      console.log("Confirm Team Switch");
+      currentUserSwitchTeam();
+    })
+    .on('confirmroleswitch', function() { //Confirmed Current User Role Switch
+      console.log("Confirm Role Switch");
+      currentUserSwitchRole();
+    })
+    .on('failready', function(){ //If the ready/unready request fails, then revert it.
+      console.log("Failed Ready");
+      if(currentReady) $('view.lobby .btn[data-type="ready"]').click();
+    })
+    .on('failunready', function(){ //If the ready/unready request fails, then revert it.
+      console.log("Failed Unrady");
+      if(!currentReady) $('view.lobby .btn[data-type="ready"]').click();
     })
     .on('player_join', function(data) { //Another player joined.
       console.log('Player Joined Game');
@@ -187,7 +216,7 @@ $(function() {
   */
   function updateThemeColor(team) {
     $('meta[name=theme-color]').add('meta[name=msapplication-navbutton-color]').remove();
-    var color = "#333333";
+    let color = "#333333";
     if (team === "red") {
       color = '#c0392b';
     } else if (team === "blue") {
