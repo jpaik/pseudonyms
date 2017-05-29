@@ -26,10 +26,13 @@ router.post('/create', function(req, res, next) {
     };
 
     room.players[id] = player;
+    room.teamCounts = { red : 1, blue : 0}; 
 
     res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
     res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
     res.cookie('name', name, { maxAge : 86400000, httpOnly : false });
+    res.cookie('teamName', 'red', { maxAge : 86400000, httpOnly : false });
+
     res.status(200).send({code: gameCode});
 });
 
@@ -40,18 +43,21 @@ router.post('/join', function(req, res, next) {
 
     if (gameCode in rooms) {
         var id = uuid();
+        var smallestTeam = req.app.socketio.getSmallestTeam(gameCode);
         var player = {
             name : name,
-            teamName : 'red',
+            teamName : smallestTeam,
             roleName : 'player',
             ready : false
         };
 
         rooms[gameCode].players[id] = player;
+        rooms.teamCounts[smallestTeam]++;
 
         res.cookie('userId', id, { maxAge : 86400000, httpOnly : false });
         res.cookie('gameCode', gameCode, { maxAge : 86400000, httpOnly : false });
         res.cookie('name', name, { maxAge : 86400000, httpOnly : false });
+        res.cookie('teamName', smallestTeam, { maxAge : 86400000, httpOnly : false });
 
         res.status(200).end();
     } else {

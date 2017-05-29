@@ -38,9 +38,11 @@ io.on('connection', function(socket) {
             socket.userId = userId;
             socket.gameCode = gameCode;
 
+            var user = getUser(userId, gameCode);
             io.in(gameCode).emit('player_join', {
-                userId : userId
-                name : getUser(userId, gameCode).name
+                userId : userId,
+                name : user.name,
+                teamName : user.teamName
             });
             socket.join(gameCode);
 
@@ -100,6 +102,22 @@ function isInGame(userId, gameCode) {
 
 function getUser(userId, gameCode) {
     return socketApi.rooms[gameCode].players[userId];
+}
+
+socketApi.getSmallestTeam = function(gameCode) {
+    var teamCounts = socketApi.rooms[gameCode].teamCounts;
+
+    var min = undefined;
+    var minTeamName = undefined;
+    Object.keys(teams).forEach(function(teamName) {
+        var count = teamCounts[teamName];
+        if (min === undefined || count < min) {
+            min = count;
+            minTeamName = teamName;
+        }
+    });
+
+    return minTeamName;
 }
 
 module.exports = socketApi;
