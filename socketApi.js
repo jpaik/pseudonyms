@@ -43,7 +43,16 @@ io.on('connection', function(socket) {
                 name : getUser(userId, gameCode).name
             });
             socket.join(gameCode);
-            socket.emit('confirmjoin');
+
+            var players = socketApi.rooms[gameCode].players;
+            var users = [];
+            Object.keys(players).forEach(function(key) {
+                users.push(players[key]);
+            });
+
+            socket.emit('confirmjoin', {
+                users : users
+            });
         } else {
             socket.emit('failjoin');
         }
