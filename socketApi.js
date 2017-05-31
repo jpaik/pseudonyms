@@ -142,6 +142,11 @@ io.on('connection', function(socket) {
                 userId : socket.userId
             });
             socket.emit('confirmready');
+
+            // Check if we can start game
+            if (canStartGame(gameCode)) {
+                io.in(gameCode).emit('startgame');
+            }
         }
     });
     socket.on('unready', function() {
@@ -192,6 +197,23 @@ function hasMaster(gameCode, teamName) {
             return true;
         }
     });
+
+    return false;
+}
+
+function canStartGame(gameCode) {
+    var room = socketApi.rooms[gameCode];
+    var players = room.players;
+
+    if (room.state === 'lobby') {
+        Object.keys(players).forEach(function(userId) {
+            if (!players[userId].ready) {
+                return false;
+            }
+        });
+
+        return true;
+    }
 
     return false;
 }
