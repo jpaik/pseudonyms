@@ -30,8 +30,8 @@ io.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        var userId = data.userId;
-        var gameCode = data.gameCode;
+        var userId = socket.userId;
+        var gameCode = socket.gameCode;
 
         if (isInGame(userId, gameCode)) {
             var teamName = getUser(userId, gameCode).teamName;
