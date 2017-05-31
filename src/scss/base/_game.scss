@@ -7,85 +7,156 @@ view {
   background: rgba(255,255,255,.15);
 }
 
-.lobby > .users {
-  > .team {
-    margin-bottom: 20px;
 
-    h1 {
-      padding: 10px 15px;
+/*
+======================================
+=============LOBBY VIEW==============
+======================================
+*/
+.lobby {
+  /*
+  ===================
+  Settings
+  ===================
+  */
+  > .settings{
+
+    display: block;
+    background: $color-dark;
+    @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+    padding: 10px 15px;
+    margin: 0 0 20px;
+    h1{
       margin: 0;
-      cursor: pointer;
-      .btn {
-        font-size: $font-size-base;
-        margin-top: -10px;
-        padding: 5px 10px;
+      color: $text-color;
+      i{
+        cursor: pointer;
+      }
+
+      @include screen('mobile'){
+        font-size: 1.5em;
+        padding-right: 5px;
       }
     }
+  }
 
-    &.red {
-      @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+  /*
+  ===================
+  User Teams
+  ===================
+  */
+  > .users {
+    > .team {
+      margin-bottom: 20px;
+
       h1 {
-        background: $color-team-red;
+        padding: 10px 15px;
+        margin: 0;
+        cursor: pointer;
+
+        @include screen('mobile'){
+          font-size: 1.25em;
+          padding-right: 10px;
+        }
+
+        .btn {
+          font-size: $font-size-base;
+          margin-top: -10px;
+          padding: 5px 10px;
+
+          @include screen('mobile'){
+            font-size: .6em;
+            margin-top: -5px;
+          }
+        }
       }
 
-      ul.master {
+      &.red {
+        @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+
+        h1 {
+          background: $color-team-red;
+        }
+      }
+
+      &.blue {
+        @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
+
+        h1 {
+          background: $color-team-blue;
+        }
+      }
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background: rgba(0,0,0,.1);
+
+      &.player {
+        max-height: 200px;
+        overflow-y: auto;
+        @include screen('mobile'){
+          max-height: 125px;
+        }
+      }
+
+      &.master{
         background: rgba($color-dark, .5);
-      }
-    }
 
-    &.blue {
-      @include box-shadow(0, 5px, 5px, rgba(0,0,0,.2));
-      h1 {
-        background: $color-team-blue;
+        .btn{
+          font-size: .8em;
+          padding: 2px 5px;
+          margin-left: 5px;
+          background: transparent;
+          color: $text-color;
+        }
       }
 
-      ul.master {
-        background: rgba($color-dark, .5);
-      }
-    }
-  }
+      li {
+        padding: 10px 20px;
+        border-bottom: 1px solid $text-color-inverse;
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    background: rgba(0,0,0,.1);
-    &.player{
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    li {
-      padding: 10px 20px;
-      border-bottom: 1px solid $text-color-inverse;
-      &:last-child {
-        border-bottom: none;
+        &:last-child {
+          border-bottom: none;
+        }
       }
     }
   }
-}
 
-.lobby > .buttons {
-  margin: 40px -15px 0;
+  /*
+  ===================
+  Bottom Buttons
+  ===================
+  */
+  > .buttons {
+    margin: 40px -15px 0;
 
-  .btn {
-    width: 100%;
-  }
-
-  .btn-success {
-    color: #fff;
-    background-color: $color-green;
-
-    &:hover {
-      @include linear-gradient(135deg, $color-green 0%, darken($color-green, 10%) 100%);
+    @include screen('mobile'){
+      margin-top: 20px;
     }
-  }
 
-  .btn-danger {
-    color: #fff;
-    background-color: $color-team-red;
+    .btn {
+      width: 100%;
+    }
 
-    &:hover {
-      @include linear-gradient(135deg, $color-team-red 0%, darken($color-team-red, 10%) 100%);
+    .btn-success {
+      color: #fff;
+      background-color: $color-green;
+
+      &:hover {
+        @include linear-gradient(135deg, $color-green 0%, darken($color-green, 10%) 100%);
+      }
+    }
+
+    .btn-danger {
+      color: #fff;
+      background-color: $color-team-red;
+
+      &:hover {
+        @include linear-gradient(135deg, $color-team-red 0%, darken($color-team-red, 10%) 100%);
+      }
     }
   }
 }
