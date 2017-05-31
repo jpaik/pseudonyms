@@ -29,6 +29,17 @@ io.on('connection', function(socket) {
         console.log('Error processing packet: ' + packet);
     });
 
+    socket.on('disconnect', function() {
+        var userId = data.userId;
+        var gameCode = data.gameCode;
+
+        if (isInGame(userId, gameCode)) {
+            var teamName = getUser(userId, gameCode).teamName;
+            socketApi.rooms[gameCode].teamCounts[teamName]--;
+            socket.to(gameCode).emit('player_leave', { userId : userId });
+        }
+    });
+
     // Lobby events
     socket.on('join', function(data) {
         var userId = data.userId;
@@ -66,8 +77,8 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('leave', function() {
-        io.in(socket.gameCode).emit('player_leave', { userId : socket.userId });
         socket.leave(socket.gameCode);
+        socket.to(socket.gameCode).emit('player_leave', { userId : socket.userId });
         delete socketApi.rooms[socket.gameCode].players[socket.userId];
         delete socket.userId;
         delete socket.gameCode;
