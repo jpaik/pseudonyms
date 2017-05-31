@@ -77,8 +77,8 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('leave', function() {
-        socket.leave(socket.gameCode);
         socket.to(socket.gameCode).emit('player_leave', { userId : socket.userId });
+        socket.leave(socket.gameCode);
         delete socketApi.rooms[socket.gameCode].players[socket.userId];
         delete socket.userId;
         delete socket.gameCode;
