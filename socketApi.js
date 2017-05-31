@@ -93,6 +93,7 @@ io.on('connection', function(socket) {
             room.teamCounts[user.teamName]--;
             room.teamCounts[teamName]++;
             user.teamName = teamName;
+            user.roleName = 'player';
 
             socket.to(socket.gameCode).emit('player_teamswitch', {
                 userId : socket.userId,
@@ -144,8 +145,8 @@ io.on('connection', function(socket) {
             socket.emit('confirmready');
 
             // Check if we can start game
-            if (canStartGame(gameCode)) {
-                io.in(gameCode).emit('startgame');
+            if (canStartGame(socket.gameCode)) {
+                io.in(socket.gameCode).emit('startgame');
             }
         }
     });
