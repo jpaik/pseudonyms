@@ -17,6 +17,8 @@ app.socketio = require('./socketApi');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(require('helmet')()); //Helmet adds HTTPS headers
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
