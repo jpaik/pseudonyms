@@ -210,7 +210,6 @@ function canStartGame(gameCode) {
 
     if (room.gameState === 'lobby') {
 	if(Object.keys(players).length < 2) return false;
-	if(!hasMaster(gameCode, 'red') || !hasMaster(gameCode, 'blue')) return false;
         return Object.keys(players).every(userId => players[userId].ready);
     }
 
