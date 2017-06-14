@@ -207,14 +207,8 @@ function canStartGame(gameCode) {
     var room = socketApi.rooms[gameCode];
     var players = room.players;
 
-    if (room.state === 'lobby') {
-        Object.keys(players).forEach(function(userId) {
-            if (!players[userId].ready) {
-                return false;
-            }
-        });
-
-        return true;
+    if (room.gameState === 'lobby') {
+        return Object.keys(players).every(userId => players[userId].ready);
     }
 
     return false;
