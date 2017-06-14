@@ -72,6 +72,16 @@ Home + Simple Layouts
   padding: 40px;
   @include box-shadow(0, 0, 10px, rgba(0,0,0,.2));
   background: rgba(255,255,255,.15);
+
+  @include screen('mobile'){
+    padding: 20px;
+  }
+
+  h1{
+    @include screen('mobile'){
+        margin-top: 10px;
+    }
+  }
 }
 .main-layout{
   h1{
@@ -132,6 +142,11 @@ Button Styling
   padding: 40px 0;
   border-top: 1px solid $text-color-light;
   border-bottom: 1px solid $text-color-light;
+
+  @include screen('mobile'){
+      margin: 20px 0;
+      padding: 20px 0;
+  }
   .btn.new{
       margin-right: 10px;
       @include screen('mobile'){
@@ -182,6 +197,10 @@ About Page
     margin-top: 10px;
     >div{
       padding-right: 0px;
+
+      @include screen('mobile'){
+        padding: 0px;
+      }
     }
     .btn{
       width: 100%;
@@ -192,6 +211,10 @@ About Page
       &.active{
         background-color: #3a7bd5;
         color: #fff;
+      }
+
+      @include screen('mobile'){
+        min-width: 40%;
       }
     }
   }
@@ -205,6 +228,12 @@ About Page
     max-height: 300px;
     p{
       font-size: 1.25em;
+    }
+  }
+
+  .story, .instructions{
+    @include screen('mobile'){
+      padding: 0px;
     }
   }
   .instructions{

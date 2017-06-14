@@ -7,9 +7,9 @@ block content
         .col-md-12
           h1 About Pseudonyms
       .row.toggles
-        .col-md-4
+        .col-xs-4.col-md-4
           a.btn.btn-default.active(href="#", data-toggle="story") Story
-        .col-md-4
+        .col-xs-8.col-md-4
           a.btn.btn-default(href="#", data-toggle="instructions") Instructions
       .row
         .col-md-12.story
@@ -32,7 +32,16 @@ block content
               |Be cautious of imitation bots, malware developed by government agencies, that can pose as one of your contacts. If you accidentally ping these bots, you need to terminate the mission immediately and destroy all evidence.
         .col-md-12.instructions
           .contents
-            p Instructions
+            p
+              |The Leader of the group receives the contact's real identities and must provide the team with a one word hint.
+              |Hints can only be one word and can be followed by a number that corresponds to the number of contacts it refers to.
+              br
+              br
+              |Players must try to see through the hint and find the matching Pseudonyms of the contacts. 
+              |They can relay information to any contact on the board, so choosing the opposing team's contact will count towards the other team.
+              br
+              br
+              |Choosing the imitation bot will end the game immediately and the team that chose it will lose.
       .row
         .col-md-12
           include partials/footer
