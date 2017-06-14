@@ -1,6 +1,48 @@
 extends layout
 
 block content
-  .container.text-center
-    h1= title
-    p About Page
+  .container.row.text-center
+    .col-md-4.col-md-offset-4.main-layout
+      .row
+        .col-md-12
+          h1 About Pseudonyms
+      .row.toggles
+        .col-md-4
+          a.btn.btn-default.active(href="#", data-toggle="story") Story
+        .col-md-4
+          a.btn.btn-default(href="#", data-toggle="instructions") Instructions
+      .row
+        .col-md-12.story
+          .contents
+            p
+              |Government agencies around the world are censoring and suppressing crucial information about current events from the public.
+              br
+              br
+              |Journalist and activist groups across the globe are outraged and are trying their best to get this information and release it to the public.
+              br
+              |Your team, a specialized group of hackers hired by one of these groups, just got access to top secret information and need to relay the data to contacts spread around the world.
+              br
+              |Unfortunately, these contacts are using Pseudonyms, generated randomly by a HOTP (RFC-4226) based algorithm, in order to protect their identities. 
+              |It is your team's duty to contact your corresponding publishers.
+              br
+              br
+              |Do your best to relay the information to your contacts before your competitors do in order to receive your payout.
+              br
+              br
+              |Be cautious of imitation bots, malware developed by government agencies, that can pose as one of your contacts. If you accidentally ping these bots, you need to terminate the mission immediately and destroy all evidence.
+        .col-md-12.instructions
+          .contents
+            p Instructions
+      .row
+        .col-md-12
+          include partials/footer
+
+block scripts
+  script.
+    $('.toggles .btn').on('click', function(e){
+      e.preventDefault();
+      $('.toggles .btn').removeClass('active');
+      $(this).addClass('active');
+      var tab = $(this).data('toggle');
+      $('.' + tab).show().siblings().hide();
+    });
