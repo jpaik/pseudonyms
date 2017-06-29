@@ -160,3 +160,77 @@ view {
     }
   }
 }
+
+/*
+======================================
+===============GAME VIEW==============
+======================================
+*/
+view.game{
+  .gameContainer{
+    margin-bottom: 20px;
+
+    &:after{
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .card{
+      display: inline-block;
+      width: calc(20% - 10px);
+      float: left;
+      padding: 10px 0;
+      box-shadow: 0 0 5px rgba(0,0,0,.2);
+      margin: 5px;
+      color: #333;
+      font-size: 18px;
+      font-weight: 400;
+
+      .col-xs-12{
+        padding: 0 5px;
+      }
+
+      &[data-color=""]{
+        background: rgba($color-neutral,.8);
+        border: 1px solid $color-neutral;
+        cursor: pointer;
+        @include transition(all ease .3s);
+
+        &:hover{
+          @include scale(1.025);
+          @include transition(all ease .3s);
+        }
+      }
+      &[data-color="red"]{
+        background: rgba($color-team-red,.7);
+        border: 1px solid $color-team-red;
+        color: #fff;
+      }
+      &[data-color="blue"]{
+        background: rgba($color-team-blue,.7);
+        border: 1px solid darken($color-team-blue, 8%);
+        color: #fff;
+      }
+      &[data-color="black"]{
+        background: rgba(#333,.9);
+        border: 1px solid #111;
+        color: #fff;
+      }
+      &[data-color="yellow"]{
+        background: rgba($color-yellow,.7);
+        border: 1px solid $color-yellow;
+        color: #333;
+      }
+    }
+  }
+
+  .actions{
+    .col-xs-6:first-of-type{
+      padding-left: 5px;
+    }
+    .btn{
+      color: #fff;
+    }
+  }
+}

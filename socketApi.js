@@ -149,6 +149,11 @@ io.on('connection', function(socket) {
             // Check if we can start game
             if (canStartGame(socket.gameCode)) {
                 io.in(socket.gameCode).emit('startgame');
+                var room = socketApi.rooms[socket.gameCode];
+                room.gameState = 'game';
+                io.in(socket.gameCode).emit('get_board', {
+                    board: generateBoard(socket.gameCode)
+                });
             }
         }
     });
@@ -167,6 +172,14 @@ io.on('connection', function(socket) {
     });
 
     // Game events
+    socket.on('getboard', function(){
+      var room = socketApi.rooms[socket.gameCode];
+      if(room.board){
+        socket.emit('get_board', {
+            board: room.board
+        });
+      }
+    });
     socket.on('hint', function(data) {
     });
     socket.on('chooseword', function(data) {
@@ -209,11 +222,24 @@ function canStartGame(gameCode) {
     var players = room.players;
 
     if (room.gameState === 'lobby') {
-	if(Object.keys(players).length < 2) return false;
+	      if(Object.keys(players).length < 2) return false;
         return Object.keys(players).every(userId => players[userId].ready);
     }
 
     return false;
+}
+
+function generateBoard(gameCode){
+    var room = socketApi.rooms[gameCode];
+    var board = {};
+
+    //TODO: Remove Dummy Data
+    var randColor = ['', '', 'red', 'blue', 'black', 'yellow'];
+    'abcdefghijklmnopqrstuvwxy'.split('').forEach(function(l,i){ var random = Math.floor(Math.random() * 6); board[l] = {'Id': i, 'revealed': random > 1 ? true : false, 'color': randColor[random]}; });
+    room['board'] = board;
+
+    //Use words.json and randomly select 25 non repeat words based on theme (default is default)
+    return board;
 }
 
 socketApi.getSmallestTeam = function(gameCode) {

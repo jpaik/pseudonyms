@@ -186,6 +186,8 @@ $(function() {
         checkSpymasters(); //Checks Spymasters
       } else { // Mid game
         console.log("Mid Game?");
+        socket.emit('getboard');
+        initGame();
       }
     })
     .on('confirmleave', function() {
@@ -249,11 +251,8 @@ $(function() {
     })
     .on('startgame', function(data) { //Starting the game.
       console.log('Game Started');
-    })
-    .on('endgame', function(data) { //Ending the game.
-      console.log('Game Ended');
+      initGame();
     });
-
 
 
   /*
@@ -261,8 +260,76 @@ $(function() {
   Game View
   ====================
   */
+  let gameView = $('view.game');
+  //displays, gameContainer, actions are sub classes
+  /*
+    @class displays = On the top that shows Hint, team, Score, etc
+    @class gameContainer = Cards view that holds cards
+    @class actions = On the bottom that has button actions 'Skip', etc
+  */
+  function initGame(){ //Starts and renders game view
+    $('view.lobby').hide();
+    $(gameView).show();
+    $(gameView).parent().removeClass('col-md-4 col-md-offset-4').addClass('col-md-8 col-md-offset-2');
+  }
 
+  let initBoardState = {};
+  function renderGameView(){ //Creates the cards and appends them onto the game container
+    console.log(initBoardState);
+    for(var word in initBoardState){
+      $('view.game .gameContainer').append(generateWordCard(word, initBoardState[word]));
+    }
+  }
 
+  function generateWordCard(word, data){ //Render HTML of word card
+    let color = data.revealed ? data.color : "";
+    let html = `
+      <div class="card" data-id="${data.Id}" data-word="${word}" data-color="${color}">
+        <div class="row">
+          <div class="col-xs-12">${word}</div>
+        </div>
+      </div>
+    `;
+    return html;
+  }
+
+  function sendHint(data){ //Game Master will choose a hint and number to send.
+    if(currentRole === "player") return; //Quick frontend check
+    socket.emit('hint', {
+      word: data.word,
+      number: data.number
+    });
+  }
+
+  function chooseWord(word){ //Player will choose the word.
+    if(currentRole !== "player") return; //Quick frontend check
+    socket.emit('word', {
+      word: word
+    });
+  }
+
+  function votePass(){ //Pass the turn. Majority need to check this.
+    if(currentRole !== "player") return;
+    socket.emit('votepass');
+  }
+
+  //Game Socket Events
+  socket.on('get_board', function(data){
+    initBoardState = data.board;
+    renderGameView();
+  })
+  .on('word_reveal', function(data){
+    // data.wordId, data.color
+  })
+  .on('hint_display', function(data){
+    //data.hint, data.number
+  })
+  .on('switch_turn', function(data){
+    //data.teamName
+  })
+  .on('endgame', function(data){
+    //data.teamName (team that won)
+  })
 
 
   /*
@@ -279,5 +346,9 @@ $(function() {
       color = '#2980b9';
     }
     $('head').append('<meta name="theme-color" content="' + color + '" /> <meta name="msapplication-navbutton-color" content="' + color + '" />');
+  }
+
+  function showBotAnimation(){
+
   }
 });
