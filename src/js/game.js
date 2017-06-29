@@ -267,6 +267,26 @@ $(function() {
     @class gameContainer = Cards view that holds cards
     @class actions = On the bottom that has button actions 'Skip', etc
   */
+  $('view.game .actions').on('click', '.btn', function(e){
+    var type = $(this).data('type');
+    if(type === "leave"){
+      swal({
+        title: 'Leave Game?',
+        text: 'You will not be able to join in again',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Leave',
+        cancelButtonText: 'Stay',
+        confirmButtonClass: 'btn btn-default',
+        cancelButtonClass: 'btn btn-default',
+        buttonsStyling: false,
+      }).then(function(){
+        socket.emit('leave');
+      });
+    }
+    e.preventDefault();
+  });
+
   function initGame(){ //Starts and renders game view
     $('view.lobby').hide();
     $(gameView).show();

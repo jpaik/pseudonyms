@@ -231,6 +231,9 @@ view.game{
     }
     .btn{
       color: #fff;
+      &:not(:first-of-type){
+        margin-left: 10px;
+      }
     }
   }
 }
