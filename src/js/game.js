@@ -292,9 +292,21 @@ $(function() {
   $(gameView).on('click', '.card', function(e){
     e.stopPropagation();
     var word = $(this).data('word');
-    if(word.length){
+    if($(this).data('color') || !word) return; //Don't do anything if card was revealed or not a card
+
+    swal({
+      html: true,
+      title: 'Contact Publisher',
+      html: 'Do you want to relay top secret data to: <div style="font-size:1.25em;margin-top:5px;">' + word + "?</div>",
+      showCancelButton: true,
+      confirmButtonText: 'Send Data',
+      cancelButtonText: 'Cancel',
+      confirmButtonClass: 'btn btn-default',
+      cancelButtonClass: 'btn btn-default',
+      buttonsStyling: false,
+    }).then(function(){
       chooseWord(word);
-    }
+    });
   });
 
   function initGame(){ //Starts and renders game view
