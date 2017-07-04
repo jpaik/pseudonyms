@@ -289,6 +289,14 @@ $(function() {
     e.preventDefault();
   });
 
+  $(gameView).on('click', '.card', function(e){
+    e.stopPropagation();
+    var word = $(this).data('word');
+    if(word.length){
+      chooseWord(word);
+    }
+  });
+
   function initGame(){ //Starts and renders game view
     $('view.lobby').hide();
     $(gameView).show();
@@ -325,7 +333,7 @@ $(function() {
 
   function chooseWord(word){ //Player will choose the word.
     if(currentRole !== "player") return; //Quick frontend check
-    socket.emit('word', {
+    socket.emit('chooseword', {
       word: word
     });
   }
@@ -335,13 +343,19 @@ $(function() {
     socket.emit('votepass');
   }
 
+  function revealWord(id, color){
+    $(gameView).find('.card[data-id="'+id+'"]').attr('data-color', color).data('color', color);
+  }
+
   //Game Socket Events
   socket.on('get_board', function(data){
     initBoardState = data.board;
     renderGameView();
   })
   .on('word_reveal', function(data){
-    // data.wordId, data.color
+    let wordId = data.id,
+        wordColor = data.color;
+    revealWord(wordId, wordColor);
   })
   .on('hint_display', function(data){
     //data.hint, data.number

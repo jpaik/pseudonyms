@@ -191,7 +191,20 @@ io.on('connection', function(socket) {
     socket.on('hint', function(data) {
     });
     socket.on('chooseword', function(data) {
+      var room = socketApi.rooms[socket.gameCode];
       var word = data.word;
+
+      var word_key = room.board[word];
+      if(word_key.revealed) return;
+
+      var word_color = room.colors[word_key.Id];
+      word_key.revealed = true;
+      word_key.color = word_color;
+
+      io.in(socket.gameCode).emit('word_reveal', {
+        'id': word_key.Id,
+        'color': word_color
+      });
     });
     socket.on('votepass', function() {
     });
@@ -249,7 +262,7 @@ function generateBoard(gameCode){
     var theme = "default"; //TODO: Change when we add settings to change theme - room.theme
     var load_words = kShuffle(dictionary[theme].words.slice(0)); //knuth shuffle a copy of words
 
-    room['colors'] = randomizeColors(); //Holds index colors - The "solution"
+    room.colors = randomizeColors(); //Holds index colors - The "solution"
     var idx = 0;
     //Generate Random Word Board
     while(Object.keys(board).length < 25){
@@ -258,8 +271,8 @@ function generateBoard(gameCode){
       if(!board[selectedWord]){ //If word doesn't exist
         board[selectedWord] = {
           'Id': idx,
-          'revealed': true, //TODO: Remove revealed and colors.
-          'color': room['colors'][idx]
+          'revealed': false,
+          // 'color': room.colors[idx] //Uncomment for testing only
         };
         idx++;
       }
