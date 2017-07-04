@@ -1,5 +1,7 @@
 var uuid = require('uuid/v4');
 var socketio = require('socket.io');
+var kShuffle = require('knuth-shuffle').knuthShuffle;
+var fs = require('fs');
 
 var io = socketio();
 
@@ -7,6 +9,12 @@ var socketApi = {};
 
 socketApi.io = io;
 socketApi.rooms = {};
+
+var dictionary;
+fs.readFile('words.json', 'utf8', function (err, data) {
+  if (err) throw err;
+  dictionary = JSON.parse(data);
+});
 
 io.on('connection', function(socket) {
     delete socket.userId;
@@ -183,6 +191,7 @@ io.on('connection', function(socket) {
     socket.on('hint', function(data) {
     });
     socket.on('chooseword', function(data) {
+      var word = data.word;
     });
     socket.on('votepass', function() {
     });
@@ -232,14 +241,43 @@ function canStartGame(gameCode) {
 function generateBoard(gameCode){
     var room = socketApi.rooms[gameCode];
     var board = {};
-
-    //TODO: Remove Dummy Data
+    /* Dummy Data Test
     var randColor = ['', '', 'red', 'blue', 'black', 'yellow'];
     'abcdefghijklmnopqrstuvwxy'.split('').forEach(function(l,i){ var random = Math.floor(Math.random() * 6); board[l] = {'Id': i, 'revealed': random > 1 ? true : false, 'color': randColor[random]}; });
-    room['board'] = board;
+    */
 
-    //Use words.json and randomly select 25 non repeat words based on theme (default is default)
+    var theme = "default"; //TODO: Change when we add settings to change theme - room.theme
+    var load_words = kShuffle(dictionary[theme].words.slice(0)); //knuth shuffle a copy of words
+
+    room['colors'] = randomizeColors(); //Holds index colors - The "solution"
+    var idx = 0;
+    //Generate Random Word Board
+    while(Object.keys(board).length < 25){
+      var selectRandom = Math.floor(Math.random() * load_words.length); //Select a random index from dictionary
+      var selectedWord = load_words[selectRandom]; //And choose that indexed word
+      if(!board[selectedWord]){ //If word doesn't exist
+        board[selectedWord] = {
+          'Id': idx,
+          'revealed': true, //TODO: Remove revealed and colors.
+          'color': room['colors'][idx]
+        };
+        idx++;
+      }
+    }
+
+    room['board'] = board;
     return board;
+}
+
+//1 Black, 7 Yellows, 9 Reds, 8 Blues.
+function randomizeColors(){
+  var colors = [];
+  for(i=0; i<9; i++) colors.push('red');
+  for(i=0; i<8; i++) colors.push('blue');
+  for(i=0; i<7; i++) colors.push('yellow');
+  colors.push('black');
+  colors = kShuffle(colors); //Knuth shuffle colors
+  return colors;
 }
 
 socketApi.getSmallestTeam = function(gameCode) {

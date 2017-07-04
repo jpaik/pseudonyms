@@ -186,6 +186,8 @@ $(function() {
         checkSpymasters(); //Checks Spymasters
       } else { // Mid game
         console.log("Mid Game?");
+        currentTeam = data.teamName;
+        //TODO: Might need to add user.roleName in case user was a game master.
         socket.emit('getboard');
         initGame();
       }
