@@ -187,7 +187,7 @@ $(function() {
       } else { // Mid game
         console.log("Mid Game?");
         currentTeam = data.teamName;
-        //TODO: Might need to add user.roleName in case user was a game master.
+        currentRole = data.roleName;
         socket.emit('getboard');
         initGame();
       }
@@ -286,6 +286,21 @@ $(function() {
         socket.emit('leave');
       });
     }
+    else if(type === "skip"){
+      swal({
+        title: 'Skip Turn?',
+        text: 'This will skip your team\'s turn.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Skip',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-default',
+        cancelButtonClass: 'btn btn-default',
+        buttonsStyling: false,
+      }).then(function(){
+        votePass();
+      });
+    }
     e.preventDefault();
   });
 
@@ -335,10 +350,51 @@ $(function() {
     return html;
   }
 
+  function showHintChoose(){
+    if(currentRole === "player") return; //Quick frontend check
+    swal({
+      title: 'Send a Hint',
+      html: '<input id="swal-input_hint" class="swal2-input" placeholder="Hint Word" type="text">' +
+        '<input id="swal-input_number" class="swal2-input" placeholder="Number of Cards" type="text" maxlength="2" pattern="^(0|[1-9][0-9]*)$">',
+      confirmButtonText: "Send Hint",
+      showCancelButton: false,
+      confirmButtonClass: 'btn btn-default',
+      buttonsStyling: false,
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      onOpen: function() {
+        $('#swal-input_hint').focus();
+        $('#swal-input_number').unbind('keydown').on('keydown', function(e){
+          if(e.which === 13) swal.clickConfirm();
+        });
+      },
+      preConfirm: function() {
+        return new Promise(function(resolve, reject) {
+          if ($('#swal-input_hint').val() === "") {
+            $('#swal-input_hint').focus();
+            reject('Please enter a one word hint.');
+            return;
+          }
+          if ($('#swal-input_number').val() === "") {
+            $('#swal-input_number').focus();
+            reject('Please enter a hint number. You can put 0.');
+            return;
+          }
+          resolve({
+            hint: $.trim($('#swal-input_hint').val()),
+            number: $.trim($('#swal-input_number').val())
+          });
+        })
+      }
+    }).then(function(data) {
+      sendHint(data);
+    }).catch(swal.noop);
+  }
+
   function sendHint(data){ //Game Master will choose a hint and number to send.
     if(currentRole === "player") return; //Quick frontend check
     socket.emit('hint', {
-      word: data.word,
+      hint: data.hint,
       number: data.number
     });
   }
@@ -350,14 +406,37 @@ $(function() {
     });
   }
 
-  function votePass(){ //Pass the turn. Majority need to check this.
-    if(currentRole !== "player") return;
-    socket.emit('votepass');
-  }
-
   function revealWord(id, color){
     $(gameView).find('.card[data-id="'+id+'"]').attr('data-color', color).data('color', color);
   }
+
+  function displayHint(hint, number){
+    $(gameView).find('.displays .hint').text(hint + ' : ' + (number > 0 ? number - 1 : 0));
+  }
+
+  function votePass(){ //Pass the turn. Should majority need to check this?
+    // if(currentRole !== "player") return;
+    socket.emit('votepass');
+  }
+
+  function showOverlay(){ //Disables game board interactions
+    console.log("showing overlay");
+  }
+
+  function hideOverlay(){  //Removes disabling of game board interactions
+    console.log("hiding overlay");
+
+  }
+
+  function changeTurns(team){
+    showOverlay();
+    if(currentRole === "master" && currentTeam === team){
+      hideOverlay();
+      showHintChoose();
+      return;
+    }
+  }
+
 
   //Game Socket Events
   socket.on('get_board', function(data){
@@ -365,18 +444,30 @@ $(function() {
     renderGameView();
   })
   .on('word_reveal', function(data){
-    let wordId = data.id,
-        wordColor = data.color;
-    revealWord(wordId, wordColor);
+    console.log("Revealing word");
+    revealWord(data.id, data.color);
   })
   .on('hint_display', function(data){
     //data.hint, data.number
+    displayHint(data.hint, data.number);
+  })
+  .on('failhint', function(data){ //Hint couldn't go through.
+    if(currentRole === "player") return;
+    console.log("Can't choose this as hint.");
+    showHintChoose();
   })
   .on('switch_turn', function(data){
+    console.log(data.teamName + "'s turn now.'");
     //data.teamName
+    changeTurns(data.teamName);
+  })
+  .on('endbot', function(data){
+    //data.teamName (team that chose wrong card)
+    console.log("Chose Black Card. " + data.teamName + " lost.");
   })
   .on('endgame', function(data){
     //data.teamName (team that won)
+    console.log(data.teamName + " won the game.");
   })
 
 

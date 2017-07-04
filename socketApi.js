@@ -78,7 +78,8 @@ io.on('connection', function(socket) {
             socket.emit('confirmjoin', {
                 users : users,
                 gameState : socketApi.rooms[gameCode].gameState,
-                teamName : user.teamName
+                teamName : user.teamName,
+                roleName : user.roleName
             });
         } else {
             socket.emit('failjoin');
@@ -161,6 +162,8 @@ io.on('connection', function(socket) {
                 room.gameState = 'game';
                 io.in(socket.gameCode).emit('get_board', {
                     board: generateBoard(socket.gameCode)
+                }).emit('switch_turn', {
+                    teamName: room.teamTurn
                 });
             }
         }
@@ -180,7 +183,7 @@ io.on('connection', function(socket) {
     });
 
     // Game events
-    socket.on('getboard', function(){
+    socket.on('getboard', function(){ //Draw the current board state
       var room = socketApi.rooms[socket.gameCode];
       if(room.board){
         socket.emit('get_board', {
@@ -189,11 +192,37 @@ io.on('connection', function(socket) {
       }
     });
     socket.on('hint', function(data) {
-    });
-    socket.on('chooseword', function(data) {
+      //If hint = 0, then unlimited guesses. If hint > 0, then hint = hint+1 since they have 1 more guess allowed.
+      var user = getUser(socket.userId, socket.gameCode);
+      if(user.roleName === "player") return; //Only Spymasters can set hints.
       var room = socketApi.rooms[socket.gameCode];
-      var word = data.word;
 
+      var hint = data.hint,
+          number = parseInt(data.number);
+      if(number > 0) number += 1;
+      if(room.board[hint.toUpperCase()] !== undefined){ //Hint word cannot be a word on the board.
+        socket.emit('failhint', {
+          error: 'Hint is a pseudonym on the board already.'
+        });
+        return;
+      }
+      room.hints.hint = hint;
+      room.hints.number = number;
+
+      io.in(socket.gameCode).emit('hint_display', {
+        hint : room.hints.hint,
+        number : room.hints.number
+      });
+
+    });
+    socket.on('chooseword', function(data) { //Player chooses word.
+      var user = getUser(socket.userId, socket.gameCode);
+      if(user.roleName !== "player") return; //Only players can choose.
+
+      var room = socketApi.rooms[socket.gameCode];
+      if(room.teamTurn !== user.teamName) return; //Only current turn can choose.
+
+      var word = data.word;
       var word_key = room.board[word];
       if(word_key.revealed) return;
 
@@ -205,8 +234,17 @@ io.on('connection', function(socket) {
         'id': word_key.Id,
         'color': word_color
       });
+      handleChooseWord(socket.gameCode, word_key);
     });
     socket.on('votepass', function() {
+      var room = socketApi.rooms[socket.gameCode];
+      var user = getUser(socket.userId, socket.gameCode);
+      if(room.teamTurn === user.teamName){
+        room.teamTurn = (room.teamTurn === "red" ? "blue" : "red");
+        io.in(socket.gameCode).emit('switch_turn', {
+            teamName: room.teamTurn
+        });
+      }
     });
 });
 
@@ -254,10 +292,6 @@ function canStartGame(gameCode) {
 function generateBoard(gameCode){
     var room = socketApi.rooms[gameCode];
     var board = {};
-    /* Dummy Data Test
-    var randColor = ['', '', 'red', 'blue', 'black', 'yellow'];
-    'abcdefghijklmnopqrstuvwxy'.split('').forEach(function(l,i){ var random = Math.floor(Math.random() * 6); board[l] = {'Id': i, 'revealed': random > 1 ? true : false, 'color': randColor[random]}; });
-    */
 
     var theme = "default"; //TODO: Change when we add settings to change theme - room.theme
     var load_words = kShuffle(dictionary[theme].words.slice(0)); //knuth shuffle a copy of words
@@ -271,7 +305,7 @@ function generateBoard(gameCode){
       if(!board[selectedWord]){ //If word doesn't exist
         board[selectedWord] = {
           'Id': idx,
-          'revealed': false,
+          'revealed': false
           // 'color': room.colors[idx] //Uncomment for testing only
         };
         idx++;
@@ -291,6 +325,56 @@ function randomizeColors(){
   colors.push('black');
   colors = kShuffle(colors); //Knuth shuffle colors
   return colors;
+}
+
+function handleChooseWord(gameCode, word){
+  var room = socketApi.rooms[gameCode];
+  var color = word.color;
+
+  if(color === "black"){ //Choosing imination bot ends game and current team loses.
+    io.in(gameCode).emit('endbot', {
+        teamName: room.teamTurn
+    });
+    return;
+  }
+  if(color === "yellow"){ //Choosing innocent bystanders ends turn
+    room.teamTurn = (room.teamTurn === "red" ? "blue" : "red");
+    io.in(gameCode).emit('switch_turn', {
+        teamName: room.teamTurn
+    });
+    return;
+  }
+
+  room.points[color] += 1; //Adds points to corresponding color
+  if(room.points.red >= 9){ //Red Team Wins
+    io.in(gameCode).emit('endgame', {
+        teamName: 'red'
+    });
+    return;
+  }
+  if(room.points.blue >= 8){ //Blue Team Wins
+    io.in(gameCode).emit('endgame', {
+        teamName: 'blue'
+    });
+    return ;
+  }
+
+  if(room.teamTurn !== color){ //If they choose the opposing team's card, switch turn
+    room.teamTurn = (room.teamTurn === "red" ? "blue" : "red");
+    io.in(gameCode).emit('switch_turn', {
+        teamName: room.teamTurn
+    });
+    return;
+  }
+
+  if(room.hints.number === 1){ //If they choose maximum number of hints, then switch turn.
+    room.teamTurn = (room.teamTurn === "red" ? "blue" : "red");
+    io.in(gameCode).emit('switch_turn', {
+        teamName: room.teamTurn
+    });
+  }
+  if(room.hints.number > 0 ) room.hints.number--;
+
 }
 
 socketApi.getSmallestTeam = function(gameCode) {
