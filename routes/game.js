@@ -17,6 +17,9 @@ router.post('/create', function(req, res, next) {
     room.players = {};
     room.teamCounts = { red : 0, blue : 0};
     room.gameState = 'lobby';
+    room.teamTurn = 'red';
+    room.points = { red : 0, blue : 0};
+    room.hints = {hint: '', number: 0};
 
     var id = uuid();
     var player = {
