@@ -225,6 +225,39 @@ view.game{
     }
   }
 
+  .displays{
+    margin-bottom: 10px;
+    .col-xs-6{
+      padding: 0 5px;
+    }
+    .hintDiv{
+      display: inline-block;
+      padding: 10px 15px;
+      background: rgba(0,0,0,.2);
+      @include box-shadow(0, 0, 5px, rgba(0,0,0,.3));
+    }
+    .hintDiv > span.lab{
+      color: #fff;
+      text-transform: uppercase;
+      margin-right: 5px;
+
+      &:nth-child(3){
+        margin-left: 30px;
+      }
+    }
+  }
+
+  .gameOverlay{
+    z-index: 1;
+    display: none;
+    position: absolute;
+    top:0;
+    left:0;
+    background-color: rgba(0,0,0,.2);
+    @include box-shadow(0, 0, 10px, rgba(0,0,0,.5));
+    @include animation('shine infinite 20s ease-in-out');
+  }
+
   .actions{
     .col-xs-6:first-of-type{
       padding-left: 5px;
@@ -235,5 +268,23 @@ view.game{
         margin-left: 10px;
       }
     }
+  }
+}
+
+@include keyframes(shine){
+  0%{
+    background-color: rgba(0,0,0,.3);
+  }
+  25%{
+    background-color: rgba($color-team-blue,.3);
+  }
+  50%{
+    background-color: rgba($color-yellow,.3);
+  }
+  75%{
+    background-color: rgba($color-team-red,.3);
+  }
+  100%{
+    background-color: rgba(0,0,0,.3);
   }
 }

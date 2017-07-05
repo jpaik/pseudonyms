@@ -308,7 +308,7 @@ $(function() {
     e.stopPropagation();
     var word = $(this).data('word');
     if($(this).data('color') || !word) return; //Don't do anything if card was revealed or not a card
-
+    if(currentRole !== 'player') return; //Masters should not be able to choose.
     swal({
       html: true,
       title: 'Contact Publisher',
@@ -322,6 +322,9 @@ $(function() {
     }).then(function(){
       chooseWord(word);
     });
+  })
+  .on('click', '.gameOverlay', function(e){
+    e.stopPropagation();
   });
 
   function initGame(){ //Starts and renders game view
@@ -411,7 +414,8 @@ $(function() {
   }
 
   function displayHint(hint, number){
-    $(gameView).find('.displays .hint').text(hint + ' : ' + (number > 0 ? number - 1 : 0));
+    $(gameView).find('.displays .hint').text(hint);
+    $(gameView).find('.displays .hintNum').text(number > 0 ? number - 1 : 0);
   }
 
   function votePass(){ //Pass the turn. Should majority need to check this?
@@ -420,20 +424,28 @@ $(function() {
   }
 
   function showOverlay(){ //Disables game board interactions
-    console.log("showing overlay");
+    console.log("Showing overlay");
+    $(gameView).find('.gameOverlay').css({
+      'top': $(gameView).find('.gameContainer').position().top,
+      'left': $(gameView).find('.gameContainer').position().left,
+      'width': $(gameView).find('.gameContainer').outerWidth(),
+      'height': $(gameView).find('.gameContainer').outerHeight(),
+    });
+    $(gameView).find('.gameOverlay').fadeIn(300);
   }
 
   function hideOverlay(){  //Removes disabling of game board interactions
-    console.log("hiding overlay");
-
+    console.log("Hiding overlay");
+    $(gameView).find('.gameOverlay').fadeOut(300);
   }
 
   function changeTurns(team){
     showOverlay();
-    if(currentRole === "master" && currentTeam === team){
+    if(currentTeam === team){
       hideOverlay();
+    }
+    if(currentRole === "master" && currentTeam === team){
       showHintChoose();
-      return;
     }
   }
 
